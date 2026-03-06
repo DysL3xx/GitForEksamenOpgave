@@ -73,6 +73,14 @@ class MainWindow:
         )
         next_button.grid(row=2, column=4, columnspan=2, pady=10)
 
+        # previous button
+        previous_button = ttk.Button(
+            input_frame,
+            text="previous turn",
+            command=self.previous_turn
+        )
+        previous_button.grid(row=2, column=6, columnspan=2, pady=10)
+
         # Character List Frame
         list_frame = ttk.LabelFrame(
             self.root,
@@ -155,6 +163,16 @@ class MainWindow:
         if characters:
             first_character = characters.pop(0)
             characters.append(first_character)
+            self.update_character_list()
+        else:
+            messagebox.showinfo("No Characters", "There are no characters in the tracker.")
+
+    def previous_turn(self):
+        #Ryk den bagerste krakter forrest i listen og opdater
+        characters = self.tracker.get_characters()
+        if characters:
+            last_character = characters.pop()
+            characters.insert(0, last_character)
             self.update_character_list()
         else:
             messagebox.showinfo("No Characters", "There are no characters in the tracker.")
