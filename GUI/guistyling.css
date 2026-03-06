@@ -1,0 +1,29 @@
+:root {
+  /* === Gold & Charcoal palette === */
+  --bg: #1b1b1b;           /* deep charcoal background */
+  --parchment: #2a2a2a;    /* dark card base (charcoal tint) */
+  --accent: #d4af37;       /* metallic gold accent */
+  --text-light: #f5eec7;   /* warm light text */
+  --text-dark: #d6cfa3;    /* soft gold-tan for dark elements */
+}
+
+/* Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+/* Body with dark base + subtle texture */
+body.App-body,
+body.classes-body {
+  background-color: var(--bg);
+  background-image: url('/static/parchment-texture.jpg');
+  background-repeat: repeat;
+  background-size: 600px auto;
+  background-blend-mode: overlay;
+  color: var(--text-light);
+  font-family: "Crimson Text", "Georgia", serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+}
