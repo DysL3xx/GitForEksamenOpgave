@@ -201,3 +201,12 @@ class InitiativeTracker:
 * prefer suggestions that align with the following description:
 
 Vores produkt kommer til at bestå af en ”initiative tracker” til bordrollespillet ”Dungeons and Dragons”, det består af en applikation der kommer til at holde styr på rækkefølgen hvor ved at de forskellige spillere og/eller fjender kommer til at agere i spillet. Det kommer til at fungere som et administrativt værktøj for ”game masteren”(GM) så han kan holde styr på spillets løb. Det er ofte at spillere holder styr på det ved at skrive navne ned på et papir i den rækkefølge de agere på, men fejl sker ofte og det bliver især svært når fjender ikke har rigtige navne men i stedet bare har numre(når der er flere af samme slags), hvilket er hvorfor vores applikation er nødvendigt.
+
+## 14. Project structure
+* code should be structured after the 3-layer model, the layers are as follows:
+
+-Data(the database files)
+-Logic(the main file)
+-presentation(the GUI files)
+
+this structure should be followed with all code and code should be seperated accordingly.

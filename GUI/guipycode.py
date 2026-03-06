@@ -1,7 +1,4 @@
-"""
-GUI Module for D&D Initiative Tracker
-Contains the MainWindow class and all Tkinter GUI components.
-"""
+# GUI file through python
 
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -67,6 +64,14 @@ class MainWindow:
             command=self.add_character
         )
         add_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+        # next button
+        next_button = ttk.Button(
+            input_frame,
+            text="next turn",
+            command=self.next_turn
+        )
+        next_button.grid(row=2, column=4, columnspan=2, pady=10)
 
         # Character List Frame
         list_frame = ttk.LabelFrame(
@@ -143,6 +148,16 @@ class MainWindow:
 
         # Update display
         self.update_character_list()
+
+    def next_turn(self):
+            #Ryk den første karakter i listen til bunden og opdater
+        characters = self.tracker.get_characters()
+        if characters:
+            first_character = characters.pop(0)
+            characters.append(first_character)
+            self.update_character_list()
+        else:
+            messagebox.showinfo("No Characters", "There are no characters in the tracker.")
 
     def remove_character(self):
         """Remove the selected character from the tracker."""
