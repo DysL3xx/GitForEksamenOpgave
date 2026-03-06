@@ -7,7 +7,7 @@ import tkinter as tk
 
 # Import data classes and GUI
 from initiative_data import Character, InitiativeTracker
-from GUI.guipycode import MainWindow
+from GUI.gui import MainWindow
 
 
 def main():
