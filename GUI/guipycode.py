@@ -57,13 +57,24 @@ class MainWindow:
         self.initiative_entry = ttk.Entry(input_frame, width=30)
         self.initiative_entry.grid(row=1, column=1, padx=5)
 
+        # Type selection - Combobox
+        ttk.Label(input_frame, text="Type:").grid(row=2, column=0, sticky="w", pady=5)
+        self.type_combobox = ttk.Combobox(
+            input_frame, 
+            values=["hero", "ally", "enemy"],
+            state="readonly",
+            width=27
+        )
+        self.type_combobox.current(0)  # Default to "hero"
+        self.type_combobox.grid(row=2, column=1, padx=5)
+        
         # Add button
         add_button = ttk.Button(
             input_frame,
             text="Add Character",
             command=self.add_character
         )
-        add_button.grid(row=2, column=0, columnspan=2, pady=10)
+        add_button.grid(row=3, column=0, columnspan=2, pady=10)
 
         # next button
         next_button = ttk.Button(
@@ -71,7 +82,7 @@ class MainWindow:
             text="next turn",
             command=self.next_turn
         )
-        next_button.grid(row=2, column=4, columnspan=2, pady=10)
+        next_button.grid(row=3, column=2, columnspan=2, pady=10, padx=5)
 
         # previous button
         previous_button = ttk.Button(
@@ -79,7 +90,7 @@ class MainWindow:
             text="previous turn",
             command=self.previous_turn
         )
-        previous_button.grid(row=2, column=6, columnspan=2, pady=10)
+        previous_button.grid(row=3, column=4, columnspan=2, pady=10, padx=5)
 
         # Character List Frame
         list_frame = ttk.LabelFrame(
@@ -130,6 +141,7 @@ class MainWindow:
         """Add a character to the tracker from the input fields."""
         name = self.name_entry.get().strip()
         initiative_str = self.initiative_entry.get().strip()
+        char_type = self.type_combobox.get()
 
         # Validation
         if not name:
@@ -147,12 +159,13 @@ class MainWindow:
             return
 
         # Create and add character
-        character = Character(name, initiative)
+        character = Character(name, initiative, char_type)
         self.tracker.add_character(character)
 
         # Clear input fields
         self.name_entry.delete(0, tk.END)
         self.initiative_entry.delete(0, tk.END)
+        self.type_combobox.current(0)  # Reset to default
 
         # Update display
         self.update_character_list()
@@ -203,5 +216,7 @@ class MainWindow:
         """Refresh the character list display."""
         self.character_listbox.delete(0, tk.END)
 
-        for character in self.tracker.get_characters():
+        for i, character in enumerate(self.tracker.get_characters()):
             self.character_listbox.insert(tk.END, str(character))
+            # Set background color based on character type
+            self.character_listbox.itemconfig(i, bg=character.get_display_color())

@@ -6,20 +6,31 @@ Contains the core data models: Character and InitiativeTracker.
 class Character:
     """Represents a character or enemy in the initiative tracker."""
     
-    def __init__(self, name, initiative):
+    def __init__(self, name, initiative, char_type="hero"):
         """
         Initialize a character.
         
         Args:
             name (str): The name of the character
             initiative (int): The initiative value (higher = goes first)
+            char_type (str): Type of character ("hero", "ally", or "enemy")
         """
         self.name = name
         self.initiative = initiative
+        self.char_type = char_type  # "hero", "ally", or "enemy"
     
     def __str__(self):
         """Return a formatted string for display."""
-        return f"{self.name} (Initiative: {self.initiative})"
+        return f"{self.name} (Initiative: {self.initiative}) - {self.char_type.title()}"
+    
+    def get_display_color(self):
+        """Return the background color for this character type."""
+        colors = {
+            "hero": "lightgreen",
+            "ally": "lightblue", 
+            "enemy": "lightcoral"
+        }
+        return colors.get(self.char_type, "white")
 
 
 class InitiativeTracker:
