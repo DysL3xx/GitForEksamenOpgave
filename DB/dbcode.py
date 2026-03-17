@@ -2,10 +2,10 @@ import sqlite3
 
 DB = "databaseforeksamenstuffplzgodholpimtrapedinthishellhole.db"
 
-def add_character(name, initiative):
+def add_character(name, initiative, status, pic):
     with sqlite3.connect(DB) as conn:
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO characters (name, initiative) values (?, ?)", (name, initiative))
+        cursor.execute("INSERT INTO characters (name, initiative, status, pic) values (?, ?, ?, ?)", (name, initiative, status, pic))
         conn.commit()
 
 def delete_character(name):
