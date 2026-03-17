@@ -1,69 +1,117 @@
-"""
-Data Classes for D&D Initiative Tracker
-Contains the core data models: Character and InitiativeTracker.
-"""
+from DB import dbcode as db
+
 
 class Character:
-    """Represents a character or enemy in the initiative tracker."""
-    
     def __init__(self, name, initiative, char_type="hero"):
-        """
-        Initialize a character.
-        
-        Args:
-            name (str): The name of the character
-            initiative (int): The initiative value (higher = goes first)
-            char_type (str): Type of character ("hero", "ally", or "enemy")
-        """
         self.name = name
         self.initiative = initiative
         self.char_type = char_type  # "hero", "ally", or "enemy"
     
     def __str__(self):
-        """Return a formatted string for display."""
         return f"{self.name} (Initiative: {self.initiative}) - {self.char_type.title()}"
     
     def get_display_color(self):
-        """Return the background color for this character type."""
         colors = {
-            "hero": "green",
-            "ally": "blue", 
-            "enemy": "coral"
+            "hero": "#90EE90",    # Light green
+            "ally": "#6495ED",    # Cornflower blue
+            "enemy": "#FF7F50"    # Coral
         }
-        return colors.get(self.char_type, "white")
+        return colors.get(self.char_type, "#FFFFFF")  # Default to white
 
 
 class InitiativeTracker:
-    """Manages the list of characters and their order."""
-    
+
     def __init__(self):
-        """Initialize an empty character list."""
+        """Initialize the tracker and load characters from the database."""
         self.characters = []
-    
-    def add_character(self, character):
-        """
-        Add a character to the tracker.
+        self.current_turn_index = 0
         
-        Args:
-            character (Character): The character to add
-        """
-        self.characters.append(character)
-        self.sort_by_initiative()
+        # Load existing characters from database
+        self._load_from_database()
+    
+    def _load_from_database(self):
+
+        self.characters = []
+        character_data = db.get_all_characters()
+        
+        for name, initiative, char_type, picture_path in character_data:
+            character = Character(name, initiative, char_type)
+            self.characters.append(character)
+    
+    def add_character(self, name, initiative, char_type="hero"):
+        # Check if character already exists
+        if db.character_exists(name):
+            return False
+        
+        # Add to database
+        success = db.add_character(name, initiative, char_type, "")
+        
+        if success:
+            # Reload from database to stay in sync
+            self._load_from_database()
+            return True
+        
+        return False
     
     def remove_character(self, index):
-        """
-        Remove a character by their position in the list.
-        
-        Args:
-            index (int): Position in the character list
-        """
         if 0 <= index < len(self.characters):
-            self.characters.pop(index)
+            character_to_remove = self.characters[index]
+            db.delete_character(character_to_remove.name)
+            # Reload from database to stay in sync
+            self._load_from_database()
+            return True
+        
+        return False
     
     def sort_by_initiative(self):
-        """Sort characters by initiative (highest first)."""
         self.characters.sort(key=lambda c: c.initiative, reverse=True)
     
     def get_characters(self):
-        """Return the list of characters."""
+        """
+        Get the list of all characters.
+        
+        Returns:
+            list: List of Character objects
+        """
         return self.characters
+    
+    def get_current_character(self):
+        """
+        Get the character whose turn it is right now.
+        
+        Returns:
+            Character: The current character, or None if no characters exist
+        """
+        if not self.characters:
+            return None
+        return self.characters[self.current_turn_index]
+    
+    def next_turn(self):
+        """
+        Move to the next character's turn.
+        
+        If we're at the end of the list, loop back to the beginning.
+        """
+        if self.characters:
+            self.current_turn_index = (self.current_turn_index + 1) % len(self.characters)
+    
+    def previous_turn(self):
+        """
+        Move to the previous character's turn.
+        
+        If we're at the beginning, loop back to the end.
+        """
+        if self.characters:
+            self.current_turn_index = (self.current_turn_index - 1) % len(self.characters)
+    
+    def clear_all(self):
+        """
+        Remove all characters from the tracker and database.
+        
+        Returns:
+            bool: True if successful
+        """
+        db.del_all_characters()
+        self._load_from_database()
+        self.current_turn_index = 0
+        return True
