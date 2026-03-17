@@ -24,12 +24,7 @@ class Character:
         return f"{self.name} (Initiative: {self.initiative}) - {self.char_type.title()}"
     
     def get_display_color(self):
-        """Return the background color for this character type.
-
-        This matches the default hero/ally/enemy colors used by the GUI.
-        If the GUI wants to override, it can subclass or monkey‑patch the
-        mapping (Level 3.G students can leave it as-is).
-        """
+        """Return the background color for this character type."""
         colors = {
             "hero": "green",
             "ally": "blue", 
