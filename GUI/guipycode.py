@@ -292,7 +292,6 @@ class MainWindow:
             
             # Update the display
             self.update_character_list()
-            messagebox.showinfo("Success", f"'{name}' has been added to the tracker.")
         else:
             messagebox.showerror("Error", f"A character named '{name}' already exists.")
     
@@ -300,18 +299,11 @@ class MainWindow:
         """Handle the 'Next Turn' button click."""
         characters = self.tracker.get_characters()
         
-        if not characters:
-            messagebox.showinfo("No Characters", "Add some characters first!")
-            return
         
         current = self.tracker.get_current_character()
         self.tracker.next_turn()
         next_char = self.tracker.get_current_character()
         
-        messagebox.showinfo(
-            "Next Turn",
-            f"{current.name}'s turn is over.\n\nIt's now {next_char.name}'s turn!"
-        )
         
         self.update_character_list()
     
@@ -319,17 +311,9 @@ class MainWindow:
         """Handle the 'Previous Turn' button click."""
         characters = self.tracker.get_characters()
         
-        if not characters:
-            messagebox.showinfo("No Characters", "Add some characters first!")
-            return
         
         self.tracker.previous_turn()
         current = self.tracker.get_current_character()
-        
-        messagebox.showinfo(
-            "Previous Turn",
-            f"Going back to {current.name}'s turn."
-        )
         
         self.update_character_list()
     
