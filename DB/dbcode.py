@@ -2,29 +2,26 @@ import sqlite3
 
 DB = "databaseforeksamenstuffplzgodholpimtrapedinthishellhole.db"
 
-def add_character(character_name, initiative):
+def add_character(name, initiative):
     with sqlite3.connect(DB) as conn:
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO characters (name, initiative) values (?, ?)", (character_name, initiative))
+        cursor.execute("INSERT INTO characters (name, initiative) values (?, ?)", (name, initiative))
         conn.commit()
-    
-def delete_character(character_name):
+
+def delete_character(name):
     with sqlite3.connect(DB) as conn:
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM characters WHERE name = ?", (character_name,))
+        cursor.execute("DELETE FROM characters WHERE name = ?", (name,))
         conn.commit()
 
-def update_initiative(character_name, initiative):
+def update_initiative(name, initiative):
     with sqlite3.connect(DB) as conn:
         cursor = conn.cursor()
-        cursor.execute("UPDATE characters SET initiative = ? WHERE name = ?", (initiative, character_name))
+        cursor.execute("UPDATE characters SET initiative = ? WHERE name = ?", (initiative, name))
         conn.commit()
 
-
-
-
-#with sqlite3.connect( <name of bd in her> ) as conn:
-
-#cursor = conn.cursor()
-
-#cursor.execute(INSERT INTO table_name(c1, c2 ) VALUES (?, ?))
+def del_all_characters():
+    with sqlite3.connect(DB) as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM characters")
+        conn.commit()   
