@@ -118,6 +118,52 @@ Enhanced the Character class to include a type attribute ("hero", "ally", "enemy
 
 **Next Steps (for user):**
 - Clear Python cache files if import errors persist
+
+---
+
+## Interaction 4: Paste picture URLs and show beside entity name
+
+**Date:** March 25, 2026
+
+**Prompt:**
+"give comprehensive examples on how you would adjust the gui to allow the user to paste picture urls into the database and display them on the app beside the entities name"
+
+**Summary:**
+- Advised schema changes + model updates for `pic` URL persistence in `DB/dbcode.py` and `initiative_data.py`
+- Recommended GUI enhancements in `GUI/guipycode.py` to add URL input + show thumbnails
+- Included Level 3.G friendly sample patch code and step-by-step instructions
+
+**State:** completed
+
+---
+
+## Interaction 5: Local file images from Static folder
+
+**Date:** March 25, 2026
+
+**Prompt:**
+"now change all this code back, and instead come with an example on code that would allow the user to add a file in the static folder, and make the application use that as a picture instead of a url"
+
+**Summary:**
+- Reverted all URL-related changes to restore original state
+- Implemented local file selection from "Statik" folder with file dialog
+- Added image display using PIL for selected characters
+- Stored relative paths in database for persistence
+- Added [Image] indicator in character list for characters with images
+
+**Key Changes:**
+1. **initiative_data.py**: Added `pic_path` to `Character` class and updated `add_character`/`_load_from_database`
+2. **GUI/guipycode.py**: Added file selection button, image preview on selection, local image loading
+3. **Database**: Uses existing `pic` column to store relative paths like "Statik/image.png"
+
+**New Features:**
+- "Select Image" button opens file dialog restricted to Statik folder
+- Selected image path shown in label
+- Character list shows "[Image]" for characters with pictures
+- Clicking character displays thumbnail in preview area
+- Images persist across app restarts via database
+
+**State:** completed
 - Test the application to verify type selection and color coding work
 - Consider alternative UI approaches (Radiobuttons, Treeview) if Combobox feels cumbersome
 - Database integration can store character types alongside other data

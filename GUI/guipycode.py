@@ -1,6 +1,8 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 from initiative_data import Character, InitiativeTracker
+from PIL import Image, ImageTk
+import os
 
 
 # ============================================================================
@@ -70,6 +72,9 @@ class MainWindow:
         
         # Store the tracker so we can access it later
         self.tracker = tracker
+        
+        # Initialize image selection
+        self.selected_image_path = ""
         
         # Create all the GUI elements
         self.setup_ui()
@@ -162,15 +167,51 @@ class MainWindow:
         self.type_combobox.current(0)  # Default to "hero"
         self.type_combobox.grid(row=2, column=1, padx=5, sticky="ew")
         
+        # Image file selection
+        ttk.Label(input_frame, text="Image:").grid(row=3, column=0, sticky="w", pady=5)
+        self.image_path_label = ttk.Label(input_frame, text="No image selected", background=PARCHMENT, foreground=TEXT_LIGHT, relief="sunken")
+        self.image_path_label.grid(row=3, column=1, padx=5, sticky="ew")
+        select_image_button = ttk.Button(
+            input_frame,
+            text="Select Image",
+            command=self._on_select_image
+        )
+        select_image_button.grid(row=4, column=0, columnspan=2, pady=5, sticky="ew")
+        
         # Add button
         add_button = ttk.Button(
             input_frame,
             text="Add Character",
             command=self._on_add_character
         )
-        add_button.grid(row=3, column=0, columnspan=2, pady=10, sticky="ew")
+        add_button.grid(row=5, column=0, columnspan=2, pady=10, sticky="ew")
         
         input_frame.columnconfigure(1, weight=1)
+    
+    def _on_select_image(self):
+        """Handle the 'Select Image' button click."""
+        static_dir = os.path.join(os.getcwd(), "Statik")
+        if not os.path.exists(static_dir):
+            os.makedirs(static_dir)
+        
+        file_path = filedialog.askopenfilename(
+            initialdir=static_dir,
+            title="Select Image",
+            filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")]
+        )
+        if file_path:
+            # Store relative path if it's in Statik folder
+            if file_path.startswith(static_dir):
+                relative_path = os.path.relpath(file_path, os.getcwd())
+                self.selected_image_path = relative_path
+                self.image_path_label.config(text=os.path.basename(file_path))
+            else:
+                messagebox.showwarning("Invalid Location", "Please select an image from the Statik folder.")
+                self.selected_image_path = ""
+                self.image_path_label.config(text="No image selected")
+        else:
+            self.selected_image_path = ""
+            self.image_path_label.config(text="No image selected")
     
     def _create_turn_controls_section(self):
         """Create the buttons to navigate through turns."""
@@ -231,6 +272,13 @@ class MainWindow:
         )
         scrollbar.pack(side="right", fill="y")
         self.character_listbox.config(yscrollcommand=scrollbar.set)
+        
+        # Preview label for selected character's image
+        self.preview_label = ttk.Label(list_frame, text="Select a character to view image", background=PARCHMENT, foreground=TEXT_LIGHT)
+        self.preview_label.pack(fill="x", pady=5)
+        
+        # Bind the listbox to the character select event
+        self.character_listbox.bind("<<ListboxSelect>>", self._on_character_select)
     
     def _create_button_section(self):
         """Create the action buttons (Remove, Clear All)."""
@@ -289,6 +337,8 @@ class MainWindow:
             self.name_entry.delete(0, tk.END)
             self.initiative_entry.delete(0, tk.END)
             self.type_combobox.current(0)
+            self.selected_image_path = ""
+            self.image_path_label.config(text="No image selected")
             
             # Update the display
             self.update_character_list()
@@ -371,6 +421,8 @@ class MainWindow:
         for i, character in enumerate(characters):
             # Create the display text
             display_text = str(character)
+            if character.pic_path:
+                display_text += " [Image]"
             
             # Add it to the listbox
             self.character_listbox.insert(tk.END, display_text)
@@ -394,3 +446,26 @@ class MainWindow:
             total = len(characters)
             text = f"Turn {turn_number}/{total}: {current.name}'s turn"
             self.turn_label.config(text=text)
+
+    def _on_character_select(self, event):
+        """Handle character selection in the listbox."""
+        sel = self.character_listbox.curselection()
+        if not sel:
+            return
+        character = self.tracker.get_characters()[sel[0]]
+        self._update_preview_label(character)
+
+    def _update_preview_label(self, character):
+        """Update the preview label with the character's image."""
+        if not character.pic_path:
+            self.preview_label.config(text="No image for this character", image="")
+            return
+        try:
+            full_path = os.path.join(os.getcwd(), character.pic_path)
+            image = Image.open(full_path)
+            image.thumbnail((100, 100), Image.ANTIALIAS)
+            photo = ImageTk.PhotoImage(image)
+            self.preview_label.config(image=photo, text="")
+            self.preview_label.image = photo  # Keep reference
+        except Exception as e:
+            self.preview_label.config(text=f"Cannot load image: {str(e)}", image="")
