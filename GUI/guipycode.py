@@ -16,7 +16,7 @@ TEXT_LIGHT = "#f5eec7"         # Warm light text
 TEXT_DARK = "#d6cfa3"          # Secondary text color
 
 # Character type colors
-HERO_COLOR = "#90EE90"         # Light green
+HERO_COLOR = "#289928"         # Light green
 ALLY_COLOR = "#6495ED"         # Cornflower blue
 ENEMY_COLOR = "#FF7F50"        # Coral
 
