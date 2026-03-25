@@ -232,3 +232,30 @@ Updated GUI styles so that the type selection combobox, the turn order listbox, 
 - Continue work on database persistence or additional game mechanics
 
 ---
+
+## Interaction 6: Pytest tests for GUI code
+
+**Date:** March 25, 2026
+
+**Prompt:**
+"write a testdocument in guitest that test guipycode through pytest"
+
+**Summary:**
+- Created comprehensive pytest test suite in `tests/guitest.py`
+- Tests helper functions, GUI initialization, character list updates, and image selection logic
+- Uses mocking to avoid GUI display requirements for headless testing
+- Includes skip decorators for GUI-dependent tests that require display
+- Tests cover color mapping, character display with/without images, and file selection workflow
+
+**Test Classes:**
+1. **TestHelperFunctions**: Tests `get_color_for_character_type` with all character types
+2. **TestMainWindow**: Tests GUI initialization and character list updates with mock objects
+3. **TestImageHandling**: Tests image file selection logic with mocked file dialogs
+
+**Key Features:**
+- Mock-based testing to avoid tkinter display requirements
+- Comprehensive coverage of non-GUI logic
+- Graceful skipping of GUI tests in headless environments
+- Tests both success and error cases for image selection
+
+**State:** completed
