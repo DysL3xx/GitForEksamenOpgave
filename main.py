@@ -1,6 +1,5 @@
 """
-D&D Initiative Tracker - Main Application
-This module runs the application by importing data classes and GUI components.
+D&D Initiative Tracker
 """
 
 import tkinter as tk
@@ -10,20 +9,19 @@ from DB.dbcode import init_db
 
 
 def main():
-    # Initialize the database
+    # starter databasen
     init_db()
     
-    # Create the root Tkinter window
+    # gør klar til at vise GUI'en
     root = tk.Tk()
     
-    # Create the tracker (this loads all characters from the database)
+    # opret en tracker og giv den til GUI'en
     tracker = InitiativeTracker()
     
-    # Create the main GUI window
+    # opret GUI'en og giv den root og tracker
     app = MainWindow(root, tracker)
     
-    # Start the event loop
-    # The program will run here until the user closes the window
+    # start programmet
     root.mainloop()
 
 
