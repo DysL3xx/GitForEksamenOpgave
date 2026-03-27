@@ -259,3 +259,47 @@ Updated GUI styles so that the type selection combobox, the turn order listbox, 
 - Tests both success and error cases for image selection
 
 **State:** completed
+
+---
+
+## Interaction 7: Database Path Configuration
+
+**Date:** March 27, 2026
+
+**Prompt:**
+"kom med forslag til hvordan jeg får den til at bruge .db filen som eksisterer istedet for at lave en ny"
+(English: "Come with suggestions for how I get it to use the .db file that exists instead of creating a new one")
+
+**Summary:**
+Identified that `DB/dbcode.py` was using a relative path `"databaseforeksamenscode.db"` that searched from the current working directory instead of the `DB/` folder. Provided a solution using `os.path` to construct an absolute path relative to the `dbcode.py` file's location, ensuring the database is found regardless of where the script is executed from.
+
+**Problem:**
+The original line `DB = "databaseforeksamenscode.db"` caused the application to either:
+- Create a new database in the current working directory, or
+- Fail to find the existing one in `DB/databaseforeksamenscode.db`
+
+**Solution Provided:**
+```python
+import os
+
+DB_DIR = os.path.dirname(os.path.abspath(__file__))
+DB = os.path.join(DB_DIR, "databaseforeksamenscode.db")
+```
+
+**How It Works:**
+- `os.path.abspath(__file__)` = Full path to `dbcode.py`
+- `os.path.dirname()` = Extracts the folder containing the file (the `DB/` folder)
+- `os.path.join()` = Safely combines paths for Windows/Mac/Linux compatibility
+
+**Benefits:**
+- Application now finds and uses the existing database file
+- Works regardless of which directory the script is run from
+- Cross-platform compatible (Windows, macOS, Linux)
+- No hardcoded absolute paths needed
+
+**State:** Completed
+
+**Next Steps (for user):**
+- Apply the change to `DB/dbcode.py`
+- Run `main.py` to verify it connects to the existing database
+- All existing data in the database should now be accessible

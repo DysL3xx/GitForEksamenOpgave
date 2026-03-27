@@ -1,6 +1,9 @@
 import sqlite3
+import os
 
-DB = "databaseforeksamenscode.db"
+# Få den rigtige sti til databasen uanset hvor scriptet køres fra
+DB_DIR = os.path.dirname(os.path.abspath(__file__))
+DB = os.path.join(DB_DIR, "databaseforeksamenscode.db")
 
 def init_db():
     """
