@@ -119,7 +119,7 @@ def get_all_characters():
     
     Returns:
         list: List of tuples (name, initiative, status, pic)
-              Returns empty list if no characters or error occurs
+        Returns empty list if no characters or error occurs
     """
     try:
         with sqlite3.connect(DB) as conn:
@@ -152,7 +152,7 @@ def get_character(name):
     
     Returns:
         tuple: (name, initiative, status, pic) if found
-               None if not found
+        None if not found
     """
     try:
         with sqlite3.connect(DB) as conn:

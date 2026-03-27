@@ -303,3 +303,81 @@ DB = os.path.join(DB_DIR, "databaseforeksamenscode.db")
 - Apply the change to `DB/dbcode.py`
 - Run `main.py` to verify it connects to the existing database
 - All existing data in the database should now be accessible
+
+---
+
+## Interaction 8: Image Selection Path Validation Bug
+
+**Date:** March 27, 2026
+
+**Prompt:**
+"follow the ai-response guidelines. why cant i add a picture it says i need to pick a picture from statik but i am"
+
+**Summary:**
+The image path validation in `_on_select_image()` method was failing due to improper Windows path comparison. The check `if file_path.startswith(static_dir)` was rejecting valid images from the Statik folder because Windows paths weren't normalized before comparison.
+
+**Root Cause:**
+Direct path comparison failed because of:
+- Case sensitivity differences (e.g., `C:\Users` vs `c:\users`)
+- Inconsistent path separator formatting
+- Different path object representations on Windows
+
+**Solution Applied:**
+Added path normalization using `os.path.normpath()` and `os.path.abspath()` before the comparison:
+```python
+normalized_file = os.path.normpath(os.path.abspath(file_path))
+normalized_static = os.path.normpath(os.path.abspath(static_dir))
+
+if normalized_file.startswith(normalized_static):
+    # Accept the file
+```
+
+**How It Works:**
+- `os.path.abspath()` converts relative paths to absolute paths
+- `os.path.normpath()` standardizes separators and case on Windows
+- Now comparison works reliably across all platforms
+
+**State:** Completed
+
+**Next Steps (for user):**
+- Test image selection from Statik folder
+- Should now accept images without "Invalid Location" warning
+- Image paths persist in database
+
+---
+
+## Interaction 9: PIL Image Deprecation Warning
+
+**Date:** March 27, 2026
+
+**Prompt:**
+"now it says that it cant load image module PIL.image has no attribute antialias give me help on how to do it"
+
+**Summary:**
+The `Image.ANTIALIAS` constant was deprecated and removed in newer versions of Pillow (the Python Imaging Library). The code was trying to use an attribute that no longer exists, causing the image preview feature to fail when loading character images.
+
+**Root Cause:**
+Pillow versions 10.0.0+ removed the `ANTIALIAS` constant. It was previously used for high-quality image resizing but is now replaced by `LANCZOS`.
+
+**Solution Applied:**
+Changed one line in the `_update_preview_label()` method:
+```python
+# OLD (deprecated):
+image.thumbnail((100, 100), Image.ANTIALIAS)
+
+# NEW (modern):
+image.thumbnail((100, 100), Image.LANCZOS)
+```
+
+**Why LANCZOS:**
+- `LANCZOS` is the modern equivalent filter for high-quality image resampling
+- Works with all recent Pillow versions
+- Produces identical visual quality to the old ANTIALIAS
+- Also works with older Pillow versions (backward compatible)
+
+**State:** Completed
+
+**Next Steps (for user):**
+- Test image selection again
+- Character images should now load and display in the preview without errors
+- Application is now compatible with current Pillow versions

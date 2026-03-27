@@ -114,8 +114,12 @@ class CharacterInputFrame:
             filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")]
         )
         if file_path:
-            # gem billesti
-            if file_path.startswith(static_dir):
+            # normaliser stierne for sammenligning
+            normalized_file = os.path.normpath(os.path.abspath(file_path))
+            normalized_static = os.path.normpath(os.path.abspath(static_dir))
+            
+            # tjek om filen er i Statik-mappen
+            if normalized_file.startswith(normalized_static):
                 relative_path = os.path.relpath(file_path, os.getcwd())
                 self.selected_image_path = relative_path
                 self.image_path_label.config(text=os.path.basename(file_path))
@@ -315,7 +319,7 @@ class CharacterListFrame:
         try:
             full_path = os.path.join(os.getcwd(), character.pic_path)
             image = Image.open(full_path)
-            image.thumbnail((100, 100), Image.ANTIALIAS)
+            image.thumbnail((100, 100), Image.LANCZOS)
             photo = ImageTk.PhotoImage(image)
             self.preview_label.config(image=photo, text="")
             self.preview_label.image = photo  
