@@ -1,6 +1,6 @@
 import sqlite3
 
-DB = "databaseforeksamenstuffplzgodhelpimtrapedinthishellhole.db"
+DB = "databaseforeksamenscode.db"
 
 def init_db():
     """
